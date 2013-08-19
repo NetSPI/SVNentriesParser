@@ -1,6 +1,6 @@
 ###########################################################################################
 # Usage:																				  #
-# ./SVNtoDIR   http://EXAMPLE(CHANGEME).com/DIR/.svn/entries								 	  #
+# ./SVNtoDIR   http://EXAMPLE(CHANGEME).com/DIR/.svn/entries							  #
 #																						  #
 #	Flags That Will be implemented (eventually):										  #
 #		-t = Test file availability														  #
@@ -11,10 +11,15 @@
 #																						  #
 # Author: Karl Fosaaen (NetSPI)															  #
 # 	Twitter: @kfosaaen															  		  #
+#																						  #
+# Table Sorting JS - http://www.kryogenix.org/code/browser/sorttable/					  #
 ###########################################################################################
 
 #Start by going up to the root DIR and find your SVN entries file, put it as the URL
 $url = $args[0]
+
+#Initial working directory
+$ORIGDIR = $(get-location)
 
 #Removes SSL validation - Taken from http://pauljbrice.wordpress.com/2011/02/04/could-not-establish-trust-relationship/
 $netAssembly = [Reflection.Assembly]::GetAssembly([System.Net.Configuration.SettingsSection])
@@ -82,7 +87,7 @@ function parseEntries($entriesURL){
 	$outfile = $PATHDIR+".html"
 		
 	#Add check for root dir (parent DIR link) - This is a todo item
-	$HTMLBase = "<HTML><H1>Index of /"+$PATHDIR+"/</H1>"+$netspiImage+"<br><table><tr></tr>Name<br><hr>"
+	$HTMLBase = "<HTML><head><H1>Index of /"+$PATHDIR+'/</H1><script src="file://'+$ORIGDIR+'/sorttable.js"></script><head>'+$netspiImage+'<br><table class="sortable"><thead><tr><th>Icon</th><th>Name</th><th>Type</th></tr></thead><tbody>'
 	$HTMLBase | out-file -encoding ASCII -append $outfile
 
 	
@@ -95,7 +100,7 @@ function parseEntries($entriesURL){
 			#for($d=0;$d -le $depth; $d++){$DEEPER = $DEEPER+"../"}
 			
 			#HTML Link for the DIR (base64 garbage is the icon)
-			$DIRLink = '<tr><td valign="top"><img alt="" src="data:image/gif;base64,R0lGODlhFAAWAMIAAP/////Mmcz//5lmMzMzMwAAAAAAAAAAACH+TlRoaXMgYXJ0IGlzIGluIHRoZSBwdWJsaWMgZG9tYWluLiBLZXZpbiBIdWdoZXMsIGtldmluaEBlaXQuY29tLCBTZXB0ZW1iZXIgMTk5NQAh+QQBAAACACwAAAAAFAAWAAADVCi63P4wyklZufjOErrvRcR9ZKYpxUB6aokGQyzHKxyO9RoTV54PPJyPBewNSUXhcWc8soJOIjTaSVJhVphWxd3CeILUbDwmgMPmtHrNIyxM8Iw7AQA7" /></td><td><a href="'+$previousLine+"/"+$previousLine+'.html">'+$previousLine+"</a></td></tr>"
+			$DIRLink = '<tr><td valign="top"><img alt="" src="data:image/gif;base64,R0lGODlhFAAWAMIAAP/////Mmcz//5lmMzMzMwAAAAAAAAAAACH+TlRoaXMgYXJ0IGlzIGluIHRoZSBwdWJsaWMgZG9tYWluLiBLZXZpbiBIdWdoZXMsIGtldmluaEBlaXQuY29tLCBTZXB0ZW1iZXIgMTk5NQAh+QQBAAACACwAAAAAFAAWAAADVCi63P4wyklZufjOErrvRcR9ZKYpxUB6aokGQyzHKxyO9RoTV54PPJyPBewNSUXhcWc8soJOIjTaSVJhVphWxd3CeILUbDwmgMPmtHrNIyxM8Iw7AQA7" /></td><td><a href="'+$previousLine+"/"+$previousLine+'.html">'+$previousLine+"</a></td><td>Directory</td></tr>"
 			$DIRLink | out-file -encoding ASCII -append $outfile
 
 			#RECURSE!
@@ -103,9 +108,9 @@ function parseEntries($entriesURL){
 		}
 		elseif($_ -eq "FILE"){
 			#HTML Link for the FILE (base64 garbage is the icon)
-			$FILELink = '<tr><td valign="top"><img alt="" src="data:image/gif;base64,R0lGODlhFAAWAMIAAP////8zM8z//5mZmWYAADMzMwAAAAAAACH+TlRoaXMgYXJ0IGlzIGluIHRoZSBwdWJsaWMgZG9tYWluLiBLZXZpbiBIdWdoZXMsIGtldmluaEBlaXQuY29tLCBTZXB0ZW1iZXIgMTk5NQAh+QQBAAACACwAAAAAFAAWAAADbFi6vPJQFECrnSW+aTvPEddVIriN1wWJqFG48IlSRm0b8kwN/IBLOkvvx7IQAh1frnNEVpRAVNMJgE6mgaw2uyMCsNtt1QsOBwjjE2HNXmvR6eioCY8XK8e6fbZOeoNCRAU9hIU8LxE3ios/CQA7" /></td><td><a href="'+$CleanURL+$previousLine+'">'+$previousLine+"</a></td></tr>"
+			$FILELink = '<tr><td valign="top"><img alt="" src="data:image/gif;base64,R0lGODlhFAAWAMIAAP////8zM8z//5mZmWYAADMzMwAAAAAAACH+TlRoaXMgYXJ0IGlzIGluIHRoZSBwdWJsaWMgZG9tYWluLiBLZXZpbiBIdWdoZXMsIGtldmluaEBlaXQuY29tLCBTZXB0ZW1iZXIgMTk5NQAh+QQBAAACACwAAAAAFAAWAAADbFi6vPJQFECrnSW+aTvPEddVIriN1wWJqFG48IlSRm0b8kwN/IBLOkvvx7IQAh1frnNEVpRAVNMJgE6mgaw2uyMCsNtt1QsOBwjjE2HNXmvR6eioCY8XK8e6fbZOeoNCRAU9hIU8LxE3ios/CQA7" /></td><td><a href="'+$CleanURL+$previousLine+'">'+$previousLine+"</a></td><td>File</td></tr>"
 			#HTML Link for the .svn-base of the FILE; the source (base64 garbage is the icon)
-			$FILELink2 = '<tr><td valign="top"><img alt="" src="data:image/gif;base64,R0lGODlhFAAWAMIAAP////8zM8z//5mZmWYAADMzMwAAAAAAACH+TlRoaXMgYXJ0IGlzIGluIHRoZSBwdWJsaWMgZG9tYWluLiBLZXZpbiBIdWdoZXMsIGtldmluaEBlaXQuY29tLCBTZXB0ZW1iZXIgMTk5NQAh+QQBAAACACwAAAAAFAAWAAADbFi6vPJQFECrnSW+aTvPEddVIriN1wWJqFG48IlSRm0b8kwN/IBLOkvvx7IQAh1frnNEVpRAVNMJgE6mgaw2uyMCsNtt1QsOBwjjE2HNXmvR6eioCY8XK8e6fbZOeoNCRAU9hIU8LxE3ios/CQA7" /></td><td><a href="'+$SVNURL+"text-base/"+$previousLine+'.svn-base">'+$previousLine+".svn-base</a></td></tr>"
+			$FILELink2 = '<tr><td valign="top"><img alt="" src="data:image/gif;base64,R0lGODlhFAAWAMIAAP////8zM8z//5mZmWYAADMzMwAAAAAAACH+TlRoaXMgYXJ0IGlzIGluIHRoZSBwdWJsaWMgZG9tYWluLiBLZXZpbiBIdWdoZXMsIGtldmluaEBlaXQuY29tLCBTZXB0ZW1iZXIgMTk5NQAh+QQBAAACACwAAAAAFAAWAAADbFi6vPJQFECrnSW+aTvPEddVIriN1wWJqFG48IlSRm0b8kwN/IBLOkvvx7IQAh1frnNEVpRAVNMJgE6mgaw2uyMCsNtt1QsOBwjjE2HNXmvR6eioCY8XK8e6fbZOeoNCRAU9hIU8LxE3ios/CQA7" /></td><td><a href="'+$SVNURL+"text-base/"+$previousLine+'.svn-base">'+$previousLine+".svn-base</a></td><td>Source File</td></tr>"
 			$FILELink | out-file -encoding ASCII -append $outfile
 			$FILELink2 | out-file -encoding ASCII -append $outfile
 		}
@@ -116,7 +121,7 @@ function parseEntries($entriesURL){
 	}
 	
 	#write final line of HTML to out file
-	$HTMLFinal = "</table></HTML>"
+	$HTMLFinal = "</tbody></table></HTML>"
 	$HTMLFinal | out-file -encoding ASCII -append $outfile
 	
 	#Back out of new DIR
