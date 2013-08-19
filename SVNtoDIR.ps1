@@ -1,6 +1,6 @@
 ###########################################################################################
 # Usage:																				  #
-# ./SVNtoDIR   http://somewebsite.com/DIR/.svn/entries								 	  #
+# ./SVNtoDIR   http://EXAMPLE(CHANGEME).com/DIR/.svn/entries								 	  #
 #																						  #
 #	Flags That Will be implemented (eventually):										  #
 #		-t = Test file availability														  #
