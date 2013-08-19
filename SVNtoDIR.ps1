@@ -80,7 +80,7 @@ function parseEntries($entriesURL){
 	$outfile = $PATHDIR+".html"
 		
 	#Add check for root dir (parent DIR link) - This is a todo item
-	$HTMLBase = "<HTML><H1>Index of /"+$PATHDIR+"/</H1>"+$netspiImage+"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name<br><hr><br>"
+	$HTMLBase = "<HTML><H1>Index of /"+$PATHDIR+"/</H1>"+$netspiImage+"<br><table><tr></tr>Name<br><hr>"
 	$HTMLBase | out-file -encoding ASCII -append $outfile
 
 	
@@ -93,7 +93,7 @@ function parseEntries($entriesURL){
 			#for($d=0;$d -le $depth; $d++){$DEEPER = $DEEPER+"../"}
 			
 			#HTML Link for the DIR (base64 garbage is the icon)
-			$DIRLink = '<img alt="" src="data:image/gif;base64,R0lGODlhFAAWAMIAAP/////Mmcz//5lmMzMzMwAAAAAAAAAAACH+TlRoaXMgYXJ0IGlzIGluIHRoZSBwdWJsaWMgZG9tYWluLiBLZXZpbiBIdWdoZXMsIGtldmluaEBlaXQuY29tLCBTZXB0ZW1iZXIgMTk5NQAh+QQBAAACACwAAAAAFAAWAAADVCi63P4wyklZufjOErrvRcR9ZKYpxUB6aokGQyzHKxyO9RoTV54PPJyPBewNSUXhcWc8soJOIjTaSVJhVphWxd3CeILUbDwmgMPmtHrNIyxM8Iw7AQA7" />&nbsp;&nbsp;<a href="'+$previousLine+"/"+$previousLine+'.html">'+$previousLine+"</a><br>"
+			$DIRLink = '<tr><td valign="top"><img alt="" src="data:image/gif;base64,R0lGODlhFAAWAMIAAP/////Mmcz//5lmMzMzMwAAAAAAAAAAACH+TlRoaXMgYXJ0IGlzIGluIHRoZSBwdWJsaWMgZG9tYWluLiBLZXZpbiBIdWdoZXMsIGtldmluaEBlaXQuY29tLCBTZXB0ZW1iZXIgMTk5NQAh+QQBAAACACwAAAAAFAAWAAADVCi63P4wyklZufjOErrvRcR9ZKYpxUB6aokGQyzHKxyO9RoTV54PPJyPBewNSUXhcWc8soJOIjTaSVJhVphWxd3CeILUbDwmgMPmtHrNIyxM8Iw7AQA7" /></td><td><a href="'+$previousLine+"/"+$previousLine+'.html">'+$previousLine+"</a></td></tr>"
 			$DIRLink | out-file -encoding ASCII -append $outfile
 
 			#RECURSE!
@@ -101,7 +101,7 @@ function parseEntries($entriesURL){
 		}
 		elseif($_ -eq "FILE"){
 			#HTML Link for the FILE (base64 garbage is the icon)
-			$FILELink = '<img alt="" src="data:image/gif;base64,R0lGODlhFAAWAMIAAP////8zM8z//5mZmWYAADMzMwAAAAAAACH+TlRoaXMgYXJ0IGlzIGluIHRoZSBwdWJsaWMgZG9tYWluLiBLZXZpbiBIdWdoZXMsIGtldmluaEBlaXQuY29tLCBTZXB0ZW1iZXIgMTk5NQAh+QQBAAACACwAAAAAFAAWAAADbFi6vPJQFECrnSW+aTvPEddVIriN1wWJqFG48IlSRm0b8kwN/IBLOkvvx7IQAh1frnNEVpRAVNMJgE6mgaw2uyMCsNtt1QsOBwjjE2HNXmvR6eioCY8XK8e6fbZOeoNCRAU9hIU8LxE3ios/CQA7" />&nbsp;&nbsp;<a href="'+$CleanURL+$previousLine+'">'+$previousLine+"</a><br>"
+			$FILELink = '<tr><td valign="top"><img alt="" src="data:image/gif;base64,R0lGODlhFAAWAMIAAP////8zM8z//5mZmWYAADMzMwAAAAAAACH+TlRoaXMgYXJ0IGlzIGluIHRoZSBwdWJsaWMgZG9tYWluLiBLZXZpbiBIdWdoZXMsIGtldmluaEBlaXQuY29tLCBTZXB0ZW1iZXIgMTk5NQAh+QQBAAACACwAAAAAFAAWAAADbFi6vPJQFECrnSW+aTvPEddVIriN1wWJqFG48IlSRm0b8kwN/IBLOkvvx7IQAh1frnNEVpRAVNMJgE6mgaw2uyMCsNtt1QsOBwjjE2HNXmvR6eioCY8XK8e6fbZOeoNCRAU9hIU8LxE3ios/CQA7" /></td><td><a href="'+$CleanURL+$previousLine+'">'+$previousLine+"</a></td></tr>"
 			$FILELink | out-file -encoding ASCII -append $outfile			
 		}
 		else{
@@ -111,7 +111,7 @@ function parseEntries($entriesURL){
 	}
 	
 	#write final line of HTML to out file
-	$HTMLFinal = "</HTML>"
+	$HTMLFinal = "</table></HTML>"
 	$HTMLFinal | out-file -encoding ASCII -append $outfile
 	
 	#Back out of new DIR
