@@ -42,6 +42,8 @@ function parseEntries($entriesURL){
 	
 	#Current DIR
 	$CleanURL = $entriesURL -replace ".svn/entries",""
+	#URL for .svn folder
+	$SVNURL = $entriesURL -replace "entries",""
 	
 	#Current working directory
 	$CURRDIR = $(get-location)
@@ -102,7 +104,10 @@ function parseEntries($entriesURL){
 		elseif($_ -eq "FILE"){
 			#HTML Link for the FILE (base64 garbage is the icon)
 			$FILELink = '<tr><td valign="top"><img alt="" src="data:image/gif;base64,R0lGODlhFAAWAMIAAP////8zM8z//5mZmWYAADMzMwAAAAAAACH+TlRoaXMgYXJ0IGlzIGluIHRoZSBwdWJsaWMgZG9tYWluLiBLZXZpbiBIdWdoZXMsIGtldmluaEBlaXQuY29tLCBTZXB0ZW1iZXIgMTk5NQAh+QQBAAACACwAAAAAFAAWAAADbFi6vPJQFECrnSW+aTvPEddVIriN1wWJqFG48IlSRm0b8kwN/IBLOkvvx7IQAh1frnNEVpRAVNMJgE6mgaw2uyMCsNtt1QsOBwjjE2HNXmvR6eioCY8XK8e6fbZOeoNCRAU9hIU8LxE3ios/CQA7" /></td><td><a href="'+$CleanURL+$previousLine+'">'+$previousLine+"</a></td></tr>"
-			$FILELink | out-file -encoding ASCII -append $outfile			
+			#HTML Link for the .svn-base of the FILE; the source (base64 garbage is the icon)
+			$FILELink2 = '<tr><td valign="top"><img alt="" src="data:image/gif;base64,R0lGODlhFAAWAMIAAP////8zM8z//5mZmWYAADMzMwAAAAAAACH+TlRoaXMgYXJ0IGlzIGluIHRoZSBwdWJsaWMgZG9tYWluLiBLZXZpbiBIdWdoZXMsIGtldmluaEBlaXQuY29tLCBTZXB0ZW1iZXIgMTk5NQAh+QQBAAACACwAAAAAFAAWAAADbFi6vPJQFECrnSW+aTvPEddVIriN1wWJqFG48IlSRm0b8kwN/IBLOkvvx7IQAh1frnNEVpRAVNMJgE6mgaw2uyMCsNtt1QsOBwjjE2HNXmvR6eioCY8XK8e6fbZOeoNCRAU9hIU8LxE3ios/CQA7" /></td><td><a href="'+$SVNURL+"text-base/"+$previousLine+'.svn-base">'+$previousLine+".svn-base</a></td></tr>"
+			$FILELink | out-file -encoding ASCII -append $outfile
+			$FILELink2 | out-file -encoding ASCII -append $outfile
 		}
 		else{
 			$previousLine = $_
