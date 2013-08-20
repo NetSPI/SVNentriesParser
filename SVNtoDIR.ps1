@@ -1,21 +1,21 @@
 ###########################################################################################
-# Usage:																				  #
-# ./SVNtoDIR   http://EXAMPLE(CHANGEME).com/DIR/.svn/entries OUTPUTdirectory			  #
-#																						  #
-#		URL is the URL of the .svn/entries file											  #
-#		OUTPUTdirectory is an optional directory to save source code to					  #
-#																						  #
-#	Flags That Will be implemented (eventually):										  #
-#		-t = Test file availability														  #
-#			-The script could return a server response code in the HTML to identify pages #
-#			 that 404, 302, 200, etc.													  #
-#	Other Stuff to Add:																	  #
-#		Interesting Files List (*.config, *.ini, admin.*, password.*, etc.)				  #
-#																						  #
-# Author: Karl Fosaaen (NetSPI)															  #
-# 	Twitter: @kfosaaen															  		  #
-#																						  #
-# Table Sorting JS - http://www.kryogenix.org/code/browser/sorttable/					  #
+# Usage:                                                                                  #
+# ./SVNtoDIR   http://EXAMPLE(CHANGEME).com/DIR/.svn/entries OUTPUTdirectory              #
+#                                                                                         #
+#       URL is the URL of the .svn/entries file                                           #
+#       OUTPUTdirectory is an optional directory to save source code to                   #
+#                                                                                         #
+#   Flags That Will be implemented (eventually):                                          #
+#       -t = Test file availability                                                       #
+#           -The script could return a server response code in the HTML to identify pages #
+#           that 404, 302, 200, etc.                                                      #
+#   Other Stuff to Add:                                                                   #
+#    Interesting Files List (*.config, *.ini, admin.*, password.*, etc.)                  #
+#                                                                                         #
+# Author: Karl Fosaaen (NetSPI)                                                           #
+#   Twitter: @kfosaaen                                                                    #
+#                                                                                         #
+# Table Sorting JS - http://www.kryogenix.org/code/browser/sorttable/                     #
 ###########################################################################################
 
 #Start by going up to the root DIR and find your SVN entries file, put it as the URL
@@ -109,9 +109,6 @@ function parseEntries($entriesURL){
 		#Parse until you hit a DIR or a FILE
 		if(($_ -eq "DIR") -and ($previousLine)){
 			$recurseDIR = $CleanURL+$previousLine+"/.svn/entries"
-			
-			#Fixes ../ issues
-			#for($d=0;$d -le $depth; $d++){$DEEPER = $DEEPER+"../"}
 			
 			#HTML Link for the DIR (base64 garbage is the icon)
 			$DIRLink = '<tr><td valign="top"><img alt="" src="data:image/gif;base64,R0lGODlhFAAWAMIAAP/////Mmcz//5lmMzMzMwAAAAAAAAAAACH+TlRoaXMgYXJ0IGlzIGluIHRoZSBwdWJsaWMgZG9tYWluLiBLZXZpbiBIdWdoZXMsIGtldmluaEBlaXQuY29tLCBTZXB0ZW1iZXIgMTk5NQAh+QQBAAACACwAAAAAFAAWAAADVCi63P4wyklZufjOErrvRcR9ZKYpxUB6aokGQyzHKxyO9RoTV54PPJyPBewNSUXhcWc8soJOIjTaSVJhVphWxd3CeILUbDwmgMPmtHrNIyxM8Iw7AQA7" /></td><td><a href="'+$previousLine+"/"+$previousLine+'.html">'+$previousLine+"</a></td><td>Directory</td></tr>"
