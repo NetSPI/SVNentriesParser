@@ -1,6 +1,9 @@
 ###########################################################################################
 # Usage:																				  #
-# ./SVNtoDIR   http://EXAMPLE(CHANGEME).com/DIR/.svn/entries							  #
+# ./SVNtoDIR   http://EXAMPLE(CHANGEME).com/DIR/.svn/entries OUTPUTdirectory			  #
+#																						  #
+#		URL is the URL of the .svn/entries file											  #
+#		OUTPUTdirectory is an optional directory to save source code to					  #
 #																						  #
 #	Flags That Will be implemented (eventually):										  #
 #		-t = Test file availability														  #
@@ -17,6 +20,17 @@
 
 #Start by going up to the root DIR and find your SVN entries file, put it as the URL
 $url = $args[0]
+
+#Flag for Downloading .svn-base files
+$DLFlag = 0
+
+if ($args[1]){
+	$OUTDIR = $args[1]
+	$DLFlag = 1
+	#Create a new DIR in folder
+	$newOUTPUTDIR = "mkdir "+$OUTDIR+""
+	Invoke-Expression $newOUTPUTDIR|out-null
+}
 
 #Initial working directory
 $ORIGDIR = $(get-location)
@@ -113,13 +127,25 @@ function parseEntries($entriesURL){
 			$FILELink2 = '<tr><td valign="top"><img alt="" src="data:image/gif;base64,R0lGODlhFAAWAMIAAP////8zM8z//5mZmWYAADMzMwAAAAAAACH+TlRoaXMgYXJ0IGlzIGluIHRoZSBwdWJsaWMgZG9tYWluLiBLZXZpbiBIdWdoZXMsIGtldmluaEBlaXQuY29tLCBTZXB0ZW1iZXIgMTk5NQAh+QQBAAACACwAAAAAFAAWAAADbFi6vPJQFECrnSW+aTvPEddVIriN1wWJqFG48IlSRm0b8kwN/IBLOkvvx7IQAh1frnNEVpRAVNMJgE6mgaw2uyMCsNtt1QsOBwjjE2HNXmvR6eioCY8XK8e6fbZOeoNCRAU9hIU8LxE3ios/CQA7" /></td><td><a href="'+$SVNURL+"text-base/"+$previousLine+'.svn-base">'+$previousLine+".svn-base</a></td><td>Source File</td></tr>"
 			$FILELink | out-file -encoding ASCII -append $outfile
 			$FILELink2 | out-file -encoding ASCII -append $outfile
-		}
-		else{
-			$previousLine = $_
-		}
 		
+			#Download of .svn-base method
+			if($DLFlag -eq 1){
+				$path2 = ""+$ORIGDIR+"\"+$OUTDIR+"\"+$previousLine+".svn-base"
+				$entriesURL2 = ""+$SVNURL+"text-base/"+$previousLine+".svn-base"
+				
+				try {
+					$client.DownloadFile( $entriesURL2, $path2 )
+					write-host ".svn-base File`nDownloaded:`t"$entriesURL2"`n"
+					}
+				catch [Exception] {
+					if($_.Exception.Message -eq "The underlying connection was closed: Could not establish trust relationship for the SSL/TLS secure channel.")
+					{write-host "`nHTTPS certificate is not trusted, try adding it to your trusts in IE.`n"}
+					elseif($_.Exception.Message -eq "The remote server returned an error: (404) Not Found."){write-host $_.Exception.Message;}
+					}
+			}
+		}
+		else{$previousLine = $_}
 	}
-	
 	#write final line of HTML to out file
 	$HTMLFinal = "</tbody></table></HTML>"
 	$HTMLFinal | out-file -encoding ASCII -append $outfile
